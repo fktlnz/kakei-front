@@ -29,7 +29,7 @@
 import axios from 'axios'
 import { mapGetters } from 'vuex'
 
-const URL_API = 'http://localhost:8888/kakei/kakei-api-1.8.2/public/api'
+const URL_API = 'http://localhost:80/kakei/kakei-api/public/api'
 
 export default {
   name: 'Finance',
@@ -70,15 +70,21 @@ export default {
         this.form.communication = ''
         this.form.education = ''
         this.form.entertainment = ''
-        this.showMessage('年収が未入力です', true)
         this.isEnable = false
         this.isEditLoading = false
+        this.$message({
+          message: '年収を入力してください',
+          type: 'warning'
+        })
         return
       }
       if (!Number.isInteger(Number(this.form.income))) {
         this.isEnable = false
         this.isEditLoading = false
-        this.showMessage('整数を入力してください', true)
+        this.$message({
+          message: '整数を入力してください',
+          type: 'warning'
+        })
         return
       }
 
@@ -95,9 +101,9 @@ export default {
             this.form.communication = res.data.rst.communication
             this.form.education = res.data.rst.education
             this.form.entertainment = res.data.rst.entertainment
-            this.showMessage('平均支出額を取得しました', false)
             this.isEditLoading = false
             this.isNew = false
+            this.$message('平均支出額を取得しました')
           } else {
             this.isEnable = true
             console.log(res)
@@ -108,15 +114,18 @@ export default {
             this.form.communication = ''
             this.form.education = ''
             this.form.entertainment = ''
-            this.showMessage('平均支出額を登録してください。', false)
             this.isEditLoading = false
             this.isNew = true
+            this.$message('平均支出額を登録してください。')
           }
         })
         .catch((res) => {
           this.isEditLoading = false
           this.isEnable = false
-          this.showMessage('取得に失敗しました', true)
+          this.$message({
+            message: '取得に失敗しました',
+            type: 'warning'
+          })
           console.log(res)
         })
     },
@@ -125,7 +134,10 @@ export default {
       if (!Number.isInteger(Number(this.form.income))) {
         this.isEnable = false
         this.isEditLoading = false
-        this.showMessage('整数を入力してください', true)
+        this.$message({
+          message: '整数を入力してください',
+          type: 'warning'
+        })
         return
       }
       const params = new URLSearchParams()
@@ -144,29 +156,22 @@ export default {
         .then((res) => {
           console.log(res)
           if (res.data.res === 'OK') {
-            this.showMessage(res.data.message, false)
+            this.$message(res.data.message)
           } else {
-            this.showMessage(res.data.message, true)
+            this.$message({
+              message: res.data.message,
+              type: 'warning'
+            })
           }
           this.isSubmitLoading = false
         })
         .catch((res) => {
-          this.showMessage(res.data.message, true)
+          this.$message({
+            message: res.data.message,
+            type: 'warning'
+          })
           this.isSubmitLoading = false
         })
-    },
-    showMessage(message, error) {
-      this.showMsg = true
-      this.message = message
-      this.isError = error
-      this.closeMessage()
-    },
-    closeMessage() {
-      // メッセージフェードアウト
-      setTimeout(() => {
-        this.showMsg = false
-        this.isError = false
-      }, 3000)
     }
   }
 }
