@@ -39,6 +39,7 @@
         <el-table-column align="center" label="動画ID" width="200">
           <template slot-scope="scope">
             <span v-if="!(isEdit && (form.id === scope.row.movie_id))">{{ scope.row.movie_id }}</span>
+            <img v-if="!(isEdit && (form.id === scope.row.movie_id))" :src="scope.row.snippet.thumbnails.default.url" alt="サムネイル">
             <el-input v-if="isEdit && (form.id === scope.row.movie_id)" v-model="form.id" :value="scope.row.movie_id" />
           </template>
         </el-table-column>
@@ -110,7 +111,8 @@ export default {
             this.listTemp = res.data.rst // 登録Youtube情報をすべて取得
             console.log(this.listTemp)
             this.requestOptions.id = res.data.ids.join(',') // 登録Youtubeの動画IDをカンマ区切りで取得
-
+            console.log('ids')
+            console.log(this.requestOptions)
             this.getYoutubeInfo()
           } else {
             this.$message({
@@ -213,6 +215,7 @@ export default {
         console.log('response')
         console.log(response.result)
         this.items = response.result.items
+        this.joinArray(this.listTemp, this.items)
       }, (reason) => {
         console.log('reason!!')
         console.log(reason.result)
@@ -232,9 +235,21 @@ export default {
       this.isEdit = true
     },
     joinArray(arr1, arr2) {
+      var loop = 0
+      var arrResult = []
+      console.log('arr2')
+      console.log(arr2)
       arr1.forEach((val) => {
-        
+        console.log(loop)
+        Object.assign(val, arr2[loop])
+        console.log('assigned')
+        console.log(val)
+        arrResult.push(val)
+        loop++
       })
+      console.log('arrResult!')
+      console.log(arrResult)
+      this.list = arrResult
     },
     onCancel() {
       this.form.id = ''
