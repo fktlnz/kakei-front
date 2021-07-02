@@ -22,12 +22,26 @@
         <el-input v-model="form.comment" type="textarea" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getYoutubeInfo">登録</el-button>
+        <el-button type="primary" @click="onSubmit">登録</el-button>
         <el-button @click="onCancel">Cancel</el-button>
+        <!-- <el-button @click="ontest">test</el-button> -->
       </el-form-item>
     </el-form>
-
     <div class="p-search__result-container">
+      <el-form>
+        <el-form-item label="表示">
+          <el-checkbox-group v-model="enableType">
+            <el-checkbox label="food" name="type" />
+            <el-checkbox label="residence" name="type" />
+            <el-checkbox label="utility" name="type" />
+            <el-checkbox label="medical" name="type" />
+            <el-checkbox label="communication" name="type" />
+            <el-checkbox label="education" name="type" />
+            <el-checkbox label="entertainment" name="type" />
+          </el-checkbox-group>
+          <el-button type="primary" @click="fetchData">更新</el-button>
+        </el-form-item>
+      </el-form>
       <el-table
         v-loading="listLoading"
         :data="list"
@@ -36,35 +50,37 @@
         fit
         highlight-current-row
       >
-        <el-table-column align="center" label="動画ID" width="200">
+        <el-table-column align="center" label="動画" width="300">
           <template slot-scope="scope">
-            <span v-if="!(isEdit && (form.id === scope.row.movie_id))">{{ scope.row.movie_id }}</span>
-            <img v-if="!(isEdit && (form.id === scope.row.movie_id))" :src="scope.row.snippet.thumbnails.default.url" alt="サムネイル">
-            <el-input v-if="isEdit && (form.id === scope.row.movie_id)" v-model="form.id" :value="scope.row.movie_id" />
+            <img v-if="!(isEdit && (beforeForm.id === scope.row.movie_id))" :src="scope.row.snippet.thumbnails.default.url" alt="サムネイル">
+            <p v-if="!(isEdit && (beforeForm.id === scope.row.movie_id))">{{ scope.row.snippet.title }}</p>
+            <el-input v-if="isEdit && (beforeForm.id === scope.row.movie_id)" v-model="form.id" :value="scope.row.movie_id" disabled="disabled" />
           </template>
         </el-table-column>
         <el-table-column label="カテゴリ" width="100">
           <template slot-scope="scope">
-            <span v-if="!(isEdit && (form.id === scope.row.movie_id))">{{ scope.row.category }}</span>
-            <el-input v-if="isEdit && (form.id === scope.row.movie_id)" v-model="form.category" :value="scope.row.category" />
+            <span v-if="!(isEdit && (beforeForm.id === scope.row.movie_id))">{{ scope.row.category }}</span>
+            <el-input v-if="isEdit && (beforeForm.id === scope.row.movie_id)" v-model="form.category" :value="scope.row.category" />
           </template>
         </el-table-column>
         <el-table-column label="サブカテゴリ" width="300" align="center">
           <template slot-scope="scope">
-            <span v-if="!(isEdit && (form.id === scope.row.movie_id))">{{ scope.row.subcategory }}</span>
-            <el-input v-if="isEdit && (form.id === scope.row.movie_id)" v-model="form.subcategory" :value="scope.row.subcategory" />
+            <span v-if="!(isEdit && (beforeForm.id === scope.row.movie_id))">{{ scope.row.subcategory }}</span>
+            <el-input v-if="isEdit && (beforeForm.id === scope.row.movie_id)" v-model="form.subcategory" :value="scope.row.subcategory" />
           </template>
         </el-table-column>
         <el-table-column label="コメント" align="center">
           <template slot-scope="scope">
-            <span v-if="!(isEdit && (form.id === scope.row.movie_id))">{{ scope.row.comment }}</span>
-            <el-input v-if="isEdit && (form.id === scope.row.movie_id)" v-model="form.comment" :value="scope.row.comment" />
+            <span v-if="!(isEdit && (beforeForm.id === scope.row.movie_id))">{{ scope.row.comment }}</span>
+            <el-input v-if="isEdit && (beforeForm.id === scope.row.movie_id)" v-model="form.comment" :value="scope.row.comment" />
           </template>
         </el-table-column>
-        <el-table-column label="" align="center" width="100">
+        <el-table-column label="" align="center" width="150">
           <template slot-scope="scope">
-            <el-button v-if="isEdit && (form.id === scope.row.movie_id)" type="warning" @click="onUpdate(scope.row)">更新</el-button>
-            <el-button v-if="!(isEdit && (form.id === scope.row.movie_id))" type="primary" @click="onEdit(scope.row)">編集</el-button>
+            <el-button v-if="!(isEdit && (beforeForm.id === scope.row.movie_id))" type="primary" @click="onEdit(scope.row)">編集</el-button>
+            <el-button v-if="isEdit && (beforeForm.id === scope.row.movie_id)" class="u-mb5" type="warning" @click="onUpdate(scope.row)">更新</el-button>
+            <el-button v-if="isEdit && (beforeForm.id === scope.row.movie_id)" class="u-ml0 u-mb5" type="danger" @click="onDelete(scope.row)">削除</el-button>
+            <el-button v-if="isEdit && (beforeForm.id === scope.row.movie_id)" type="error" @click="onCancel()">キャンセル</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -76,7 +92,7 @@
 
 import axios from 'axios'
 
-const URL_API = 'http://localhost:8888/kakei/kakei-api-1.8.2/public/api'
+const URL_API = 'http://localhost:80/kakei/kakei-api/public/api'
 
 export default {
   data() {
@@ -90,6 +106,10 @@ export default {
         subcategory: '',
         comment: ''
       },
+      beforeForm: {
+        id: ''
+      },
+      enableType: ['food', 'residence', 'utility', 'medical', 'communication', 'education', 'entertainment'],
       requestOptions: {
         id: '', // YouTube動画IDをカンマ区切りで複数指定
         part: 'id, snippet, player, statistics, status'
@@ -101,8 +121,12 @@ export default {
     this.fetchData()
   },
   methods: {
+    ontest(data) {
+      console.log(this.enableType)
+    },
     fetchData() {
-      const url = URL_API + '/movieinfo'
+      this.listLoading = true
+      const url = URL_API + '/movieinfo?enableType=' + this.enableType
       return axios.get(url)
         .then((res) => {
           if (res.data.res === 'OK') {
@@ -115,10 +139,12 @@ export default {
             console.log(this.requestOptions)
             this.getYoutubeInfo()
           } else {
+            console.log(res)
             this.$message({
               message: 'Fail!',
               type: 'warning'
             })
+            this.listLoading = false
           }
         })
         .catch((res) => {
@@ -126,6 +152,7 @@ export default {
             message: 'cancel!',
             type: 'warning'
           })
+          this.listLoading = false
         })
     },
     onSubmit() {
@@ -224,9 +251,35 @@ export default {
 
       window.gapi.load('client', get)
     },
+    onDelete() {
+      const url = URL_API + '/deletemovieinfo?movieId=' + this.form.id
+      return axios.get(url)
+        .then((res) => {
+          if (res.data.res === 'OK') {
+            this.$message('deleted!')
+            this.fetchData()
+            this.listLoading = false
+          } else {
+            console.log(res)
+            this.$message({
+              message: 'Fail Delete!',
+              type: 'warning'
+            })
+            this.listLoading = false
+          }
+        })
+        .catch((res) => {
+          this.$message({
+            message: 'Fail Delete!',
+            type: 'warning'
+          })
+          this.listLoading = false
+        })
+    },
     onEdit(form) {
       console.log('id!')
       this.form.id = form.movie_id
+      this.beforeForm.id = form.movie_id
       this.form.category = form.category
       this.form.subcategory = form.subcategory
       this.form.comment = form.comment

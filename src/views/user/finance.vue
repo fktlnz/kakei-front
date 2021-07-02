@@ -40,7 +40,7 @@
 import axios from 'axios'
 import { mapGetters } from 'vuex'
 
-const URL_API = 'http://localhost:8888/kakei/kakei-api-1.8.2/public/api'
+const URL_API = 'http://localhost:80/kakei/kakei-api/public/api'
 
 export default {
   name: 'Finance',
