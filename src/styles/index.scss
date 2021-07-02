@@ -1,0 +1,641 @@
+@import './variables.scss';
+@import './mixin.scss';
+@import './transition.scss';
+@import './element-ui.scss';
+@import './sidebar.scss';
+
+//ブレークポイント定義
+$breakpoints: (
+    'sm': 'screen and (max-width: 576px)',
+    'md': 'screen and (max-width: 768px)',
+    'lg': 'screen and (max-width: 1000px)',
+    'xl': 'screen and (max-width: 1200px)',
+) !default;
+
+//メディアクエリ関数
+@mixin mq($breakpoint: md) {
+    @media #{map-get($breakpoints, $breakpoint)} {
+        @content;
+    }
+}
+
+body {
+  height: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+}
+
+label {
+  font-weight: 700;
+}
+
+html {
+  height: 100%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+#app {
+  height: 100%;
+}
+
+*,
+*:before,
+*:after {
+  -webkit-box-sizing: inherit;
+          box-sizing: inherit;
+}
+
+a:focus,
+a:active {
+  outline: none;
+}
+
+a,
+a:focus,
+a:hover {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
+
+div:focus {
+  outline: none;
+}
+
+.clearfix {
+  &:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+}
+
+// main-container global css
+.app-container {
+  padding: 20px;
+  position: relative;  
+}
+
+.p-message-area {
+  width: 250px;
+  padding: 20px 10px;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: #fefefe;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 5px 1px #ddd;
+  border-left: 4px solid #409EFF;
+  &.error {
+    border-left: 4px solid #ff4343;
+  }
+  p {
+    margin: 0;
+  }
+
+}
+
+/* ================================
+# base
+=================================*/
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  vertical-align: middle;
+}
+
+/* ================================
+# Layout
+=================================*/
+.l-home {
+  padding: 20px;
+}
+
+.l-userfront {
+  width: 800px;
+  margin: 0 auto;
+  padding: 50px 0 100px;
+}
+
+/* ================================
+# Utility
+=================================*/
+.u-disable {
+  background-color: #ddd !important;
+  input {
+    pointer-events: none;
+    background-color: #eee;
+  }
+}
+
+.u-mb5 {
+  margin-bottom: 5px;
+}
+
+.u-mb10 {
+  margin-bottom: 10px;
+}
+
+.u-mb15 {
+  margin-bottom: 15px;
+}
+
+.u-mb20 {
+  margin-bottom: 20px;
+}
+
+.u-mb25 {
+  margin-bottom: 25px;
+}
+
+.u-mb30 {
+  margin-bottom: 30px;
+}
+
+.u-mb35 {
+  margin-bottom: 35px;
+}
+
+.u-mb40 {
+  margin-bottom: 40px;
+}
+
+.u-mb45 {
+  margin-bottom: 45px;
+}
+
+.u-mb50 {
+  margin-bottom: 50px;
+}
+
+.u-mb55 {
+  margin-bottom: 55px;
+}
+
+.u-mb60 {
+  margin-bottom: 60px;
+}
+
+.u-mb65 {
+  margin-bottom: 65px;
+}
+
+.u-mb70 {
+  margin-bottom: 70px;
+}
+
+.u-mb75 {
+  margin-bottom: 75px;
+}
+
+.u-mb80 {
+  margin-bottom: 80px;
+}
+
+.u-mb85 {
+  margin-bottom: 85px;
+}
+
+.u-mb90 {
+  margin-bottom: 90px;
+}
+
+.u-mb95 {
+  margin-bottom: 95px;
+}
+
+.u-mb100 {
+  margin-bottom: 100px;
+}
+
+.u-mb105 {
+  margin-bottom: 105px;
+}
+
+.u-mb110 {
+  margin-bottom: 110px;
+}
+
+.u-mb115 {
+  margin-bottom: 115px;
+}
+
+.u-mb120 {
+  margin-bottom: 120px;
+}
+
+.u-mb125 {
+  margin-bottom: 125px;
+}
+
+.u-mb130 {
+  margin-bottom: 130px;
+}
+
+.u-mb135 {
+  margin-bottom: 135px;
+}
+
+.u-mb140 {
+  margin-bottom: 140px;
+}
+
+.u-mb145 {
+  margin-bottom: 145px;
+}
+
+.u-mb150 {
+  margin-bottom: 150px;
+}
+
+.u-mb05em {
+  margin-bottom: 0.5em;
+}
+
+.u-mb10em {
+  margin-bottom: 1.0em;
+}
+
+.u-mb15em {
+  margin-bottom: 1.5em;
+}
+
+.u-mb20em {
+  margin-bottom: 2.0em;
+}
+
+.u-mb25em {
+  margin-bottom: 2.5em;
+}
+
+.u-mb30em {
+  margin-bottom: 3.0em;
+}
+
+@media (min-width: 768px) and (max-width: 960px) {
+  .u-pc_only {
+    display: none;
+  }
+  .u-tb_only {
+    display: inherit;
+  }
+  .u-sp_only {
+    display: none;
+  }
+  .u-tb_pc, .u-sp_tb {
+    display: inherit;
+  }
+}
+
+@media (max-width: 767px) {
+  .u-pc_only, .u-tb_only {
+    display: none;
+  }
+  .u-sp_only {
+    display: inherit;
+  }
+  .u-tb_pc {
+    display: none;
+  }
+  .u-sp_tb {
+    display: inherit;
+  }
+  #u-map {
+    padding-top: 250px;
+  }
+  .u-noshrink {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+  .u-mb5 {
+    margin-bottom: calc( 5  / 750 * 100vw);
+  }
+  .u-mb10 {
+    margin-bottom: calc( 10 / 750 * 100vw);
+  }
+  .u-mb15 {
+    margin-bottom: calc( 15 / 750 * 100vw);
+  }
+  .u-mb20 {
+    margin-bottom: calc( 20 / 750 * 100vw);
+  }
+  .u-mb25 {
+    margin-bottom: calc( 25 / 750 * 100vw);
+  }
+  .u-mb30 {
+    margin-bottom: calc( 30 / 750 * 100vw);
+  }
+  .u-mb35 {
+    margin-bottom: calc( 35 / 750 * 100vw);
+  }
+  .u-mb40 {
+    margin-bottom: calc( 40 / 750 * 100vw);
+  }
+  .u-mb45 {
+    margin-bottom: calc( 45 / 750 * 100vw);
+  }
+  .u-mb50 {
+    margin-bottom: calc( 50 / 750 * 100vw);
+  }
+  .u-mb55 {
+    margin-bottom: calc( 55 / 750 * 100vw);
+  }
+  .u-mb60 {
+    margin-bottom: calc( 60 / 750 * 100vw);
+  }
+  .u-mb65 {
+    margin-bottom: calc( 65 / 750 * 100vw);
+  }
+  .u-mb70 {
+    margin-bottom: calc( 70 / 750 * 100vw);
+  }
+  .u-mb75 {
+    margin-bottom: calc( 75 / 750 * 100vw);
+  }
+  .u-mb80 {
+    margin-bottom: calc( 80 / 750 * 100vw);
+  }
+  .u-mb85 {
+    margin-bottom: calc( 85 / 750 * 100vw);
+  }
+  .u-mb90 {
+    margin-bottom: calc( 90 / 750 * 100vw);
+  }
+  .u-mb95 {
+    margin-bottom: calc( 95 / 750 * 100vw);
+  }
+  .u-mb100 {
+    margin-bottom: calc(100 / 750 * 100vw);
+  }
+  .u-mb105 {
+    margin-bottom: calc(105 / 750 * 100vw);
+  }
+  .u-mb110 {
+    margin-bottom: calc(110 / 750 * 100vw);
+  }
+  .u-mb115 {
+    margin-bottom: calc(115 / 750 * 100vw);
+  }
+  .u-mb120 {
+    margin-bottom: calc(120 / 750 * 100vw);
+  }
+  .u-mb125 {
+    margin-bottom: calc(125 / 750 * 100vw);
+  }
+  .u-mb130 {
+    margin-bottom: calc(130 / 750 * 100vw);
+  }
+  .u-mb135 {
+    margin-bottom: calc(135 / 750 * 100vw);
+  }
+  .u-mb140 {
+    margin-bottom: calc(140 / 750 * 100vw);
+  }
+  .u-mb145 {
+    margin-bottom: calc(145 / 750 * 100vw);
+  }
+  .u-mb150 {
+    margin-bottom: calc(150 / 750 * 100vw);
+  }
+}
+
+/* ================================
+# component
+=================================*/
+.c-title-wrap {
+  text-align: center;
+}
+.c-title {
+  display: inline-block;
+  position: relative;
+  z-index: 0;
+  &.underline {
+    &::after {
+      content: '';
+      width: 100%;
+      height: 10px;
+      background-color: #f4ff55;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      z-index: -1;
+    }
+  }
+  &.border {
+    padding: 8px 10px;
+    border: 2px solid rgb(77, 77, 77);
+  }
+}
+
+$color_gray: #dcdcdc;
+$color_txt: #262626;
+$color_bg: #3f3f3f;
+/* ================================
+# 四角ボタン コンポーネント
+=================================*/
+.c-btn {
+    border: none;  
+    padding: 5px 15px;
+    background: rgb(20, 122, 255);
+    text-align: center;
+    // width: 160px;
+    // margin: 0 auto 30px;
+    border-radius: 30px;
+    color: #f1f1f1;
+    font-size: 14px;
+    &:hover {
+    opacity: .85;
+    -webkit-transition: .3s;
+    transition: .3s;
+    cursor: pointer;
+  }
+
+  @include mq() {
+    display:block;
+    margin: 0 auto 10px;
+    width: 100%;
+  }
+
+  
+}
+
+.c-btn__square-soft {
+  display: inline-block;
+  position: relative;
+  text-decoration: none;
+  color: $color_txt;
+  // width: 120px;
+  // height: 50px;
+  // line-height: 50px;
+  overflow: hidden;
+  // font-weight: bold;
+  background: -webkit-gradient(linear, left top, left bottom, from(#f0f0f0), to(#dcdcdc));
+  background: linear-gradient(#f0f0f0 0%, #dcdcdc 100%);
+  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.66);
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.28);
+          box-shadow: 0 1px 1px rgba(0, 0, 0, 0.28);  
+}
+
+.c-btn__square-soft:active {
+  /*押したとき*/
+  -webkit-transform: translateY(2px);
+  transform: translateY(2px);/*沈むように*/
+  -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.15);
+          box-shadow: 0 0 1px rgba(0, 0, 0, 0.15);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#f0f0f0), to(#dcdcdc));
+  background-image: linear-gradient(#f0f0f0 0%, #dcdcdc 100%);/*グラデーションを明るく*/
+}
+
+.c-btn__arrow-b {
+  position: relative;
+  width: 140px;
+  &:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+            transform: translateY(-50%);
+     transform-origin: center center 0;
+    right: 8px;
+  }
+  &.active:after {
+    content: url('../assets/img/loading.png');
+    -webkit-animation: rotate-btn .25s ease-in-out infinite;
+            animation: rotate-btn .25s ease-in-out infinite;
+  }
+  &.disable {
+    background-color: #ddd;
+    border: none;
+    pointer-events: none;
+  }
+}
+
+/* ================================
+# ボタンアニメーション  
+=================================*/
+
+// 矢印回転
+@-webkit-keyframes rotate-btn {
+  0% { -webkit-transform: translateY(-50%) rotate(0); transform-origin: center center 0;}
+  25% { -webkit-transform: translateY(-50%) rotate(90deg); transform-origin: center center 0;}
+  50% { -webkit-transform: translateY(-50%) rotate(180deg); transform-origin: center center 0;}
+  75% { -webkit-transform: translateY(-50%) rotate(270deg); transform-origin: center center 0;}
+  100% { -webkit-transform: translateY(-50%) rotate(360deg); transform-origin: center center 0;}
+}
+@keyframes rotate-btn {
+  0% { -webkit-transform: translateY(-50%) rotate(0); transform-origin: center center 0;}
+  25% { -webkit-transform: translateY(-50%) rotate(90deg); transform-origin: center center 0;}
+  50% { -webkit-transform: translateY(-50%) rotate(180deg); transform-origin: center center 0;}
+  75% { -webkit-transform: translateY(-50%) rotate(270deg); transform-origin: center center 0;}
+  100% { -webkit-transform: translateY(-50%) rotate(360deg); transform-origin: center center 0;}
+}
+
+//光るアニメ
+.c-shiny-btn1 {
+    position: relative;    
+    text-decoration: none;
+    overflow: hidden;
+}
+.c-shiny-btn1:hover {
+    text-decoration: none;
+    color: #fff;
+}
+.c-shiny-btn1::before {
+    position: absolute;
+    content: '';
+    display: inline-block;
+    top: -180px;
+    left: 0;
+    width: 30px;
+    height: 100%;
+    background-color: #fff;
+    -webkit-animation: shiny-btn 3s ease-in-out infinite;
+            animation: shiny-btn 3s ease-in-out infinite;
+}
+@-webkit-keyframes shiny-btn {
+    0% { -webkit-transform: scale(0) rotate(45deg); opacity: 0; }
+    80% { -webkit-transform: scale(0) rotate(45deg); opacity: 0.5; }
+    81% { -webkit-transform: scale(4) rotate(45deg); opacity: 1; }
+    100% { -webkit-transform: scale(50) rotate(45deg); opacity: 0; }
+}
+@keyframes shiny-btn {
+    0% { -webkit-transform: scale(0) rotate(45deg); opacity: 0; }
+    80% { -webkit-transform: scale(0) rotate(45deg); opacity: 0.5; }
+    81% { -webkit-transform: scale(4) rotate(45deg); opacity: 1; }
+    100% { -webkit-transform: scale(50) rotate(45deg); opacity: 0; }
+}
+
+
+
+
+/* ================================
+# フォームコントロール　初期化
+=================================*/
+
+/* =========type="text" テキスト============
+<input class="text-init" type="text">
+===========================================*/
+
+input.text-init {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  background-image: none;
+  /* border: 1px solid rgba(0, 0, 0, 0.16); */
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.16);
+  border-radius: 0;
+  color: inherit;
+  font-family: inherit;
+  text-align: right;
+  /* font-size: 1em; */
+  padding: 0.4em 0.8em;
+  width: 100%;
+  &:focus {
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.16);
+    -webkit-box-shadow: none;
+            box-shadow: none;
+    outline: none;
+  }
+}
+
+/* =========textarea　テキストエリア============
+<textarea class="textarea-init"></textarea>
+===============================================*/
+
+textarea.textarea-init {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  background-image: none;
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  border-radius: 0;
+  color: inherit;
+  font-family: inherit;
+  /* font-size: 1em; */
+  height: 213px;
+  padding: 0.4em 0.8em;
+  width: 100%;
+  &:focus {
+    border: 1px solid rgba(0, 0, 0, 0.32);
+    -webkit-box-shadow: none;
+            box-shadow: none;
+    outline: none;
+  }
+}
