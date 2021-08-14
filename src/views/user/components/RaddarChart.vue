@@ -164,7 +164,10 @@ export default {
       })
       const max_rate = Math.max.apply(null, arr_rate)
       const max_ave = Math.max.apply(null, arr_ave)
-
+      console.log('hasmoreone')
+      console.log(hasMoreOne)
+      console.log('max_rate')
+      console.log(max_rate)
       if (hasMoreOne === true) {
         this.maxValue.food = this.data.average.food * max_rate
         this.maxValue.residence = this.data.average.residence * max_rate

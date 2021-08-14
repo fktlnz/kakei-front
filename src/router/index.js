@@ -32,16 +32,24 @@ import Layout from '@/layout'
  */
 export const constantRoutes = [
   {
-    path: '/search',
+    path: '/search/:sort',
     component: () => import('@/views/user/search'),
-    name: 'Search',
-    hidden: true
+    name: 'SearchUser',
+    hidden: true,
+    props: true
   },
 
   {
     path: '/finance',
     component: () => import('@/views/user/finance'),
     name: 'Finance',
+    hidden: true
+  },
+
+  {
+    path: '/gensen',
+    component: () => import('@/views/user/gensen'),
+    name: 'Gensen',
     hidden: true
   },
 
@@ -85,22 +93,22 @@ export const constantRoutes = [
     meta: { title: 'Config', icon: 'form' },
     children: [
       {
+        path: 'users',
+        name: 'UsersConfig',
+        component: () => import('@/views/config/users'),
+        meta: { title: 'Users', icon: 'user' }
+      },
+      {
         path: 'finance',
-        name: 'Finance',
+        name: 'FinanceConfig',
         component: () => import('@/views/config/finance'),
-        meta: { title: 'Finance', icon: 'form' }
+        meta: { title: 'Finance', icon: 'money' }
       },
       {
-        path: 'search',
-        name: 'Search',
-        component: () => import('@/views/config/search'),
-        meta: { title: 'Search', icon: 'form' }
-      },
-      {
-        path: 'test',
-        name: 'Test',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Test', icon: 'tree' }
+        path: 'movie',
+        name: 'MovieConfig',
+        component: () => import('@/views/config/movie'),
+        meta: { title: 'Movie', icon: 'component' }
       }
     ]
   },

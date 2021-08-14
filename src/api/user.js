@@ -1,12 +1,22 @@
 import request from '@/utils/request'
 
 export function login(data) {
+  console.log('data')
+  console.log(data)
   return request({
-    url: '/vue-admin-template/user/login',
+    url: 'http://localhost:80/kakei/kakei-api/public/api/login',
     method: 'post',
     data
   })
 }
+
+// export function login(data) {
+//  return request({
+//    url: '/vue-admin-template/user/login',
+//    method: 'post',
+//    data
+//  })
+// }
 
 export function getInfo(token) {
   return request({

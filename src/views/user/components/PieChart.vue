@@ -105,8 +105,6 @@ export default {
       })
     },
     sort() {
-      console.log('sort')
-      console.log(this.data.you)
       const data_ = [
         { value: this.data.you.food, name: '食料 ' },
         { value: this.data.you.residence, name: '住居' },
@@ -122,8 +120,6 @@ export default {
         return 0
       })
       this.pdata = data_
-      console.log('sorted')
-      console.log(this.pdata)
     }
   }
 }

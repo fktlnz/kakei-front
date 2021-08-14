@@ -125,14 +125,26 @@ li {
 }
 
 .l-userfront {
-  width: 800px;
   margin: 0 auto;
-  padding: 50px 0 100px;
+  padding: 50px 50px 100px;
+  @include mq() {
+    padding: 20px 10px 100px;
+  }
+}
+
+.l-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 95%;
 }
 
 /* ================================
 # Utility
 =================================*/
+
+.c-hide {
+  display: none;
+}
 .u-disable {
   background-color: #ddd !important;
   input {
@@ -447,6 +459,57 @@ li {
     border: 2px solid rgb(77, 77, 77);
   }
 }
+
+.c-comment {
+  position: relative;
+  padding: 5px 10px 10px 5px;
+  background-color: #507798;
+  color: #fff;
+  border-radius: 10px;
+  margin-top: 0;
+  font-size: 12px;
+  &::before {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 30px;
+    height: 30px;
+    bottom: -9px; left: 20px;
+    margin-left: 0;
+    background-color: #507798;
+    border-radius: 0 50px 0 50px;
+    z-index: -1;
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 30px;
+    height: 30px;
+    bottom: -15px; left: 30px;
+    margin-left: 0;
+    background-color: #fff;
+    border-radius: 0 50px 0 50px;
+    z-index: -1;
+    transform: rotate(30deg);
+  }
+
+  > img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-right: 5px;
+  }
+
+  > span {
+    display: inline-block;
+    color: #fff;
+    vertical-align: middle;
+    width: calc(100% - 55px);
+    width: -webkit-calc(100% - 55px);
+  }
+}  
 
 $color_gray: #dcdcdc;
 $color_txt: #262626;

@@ -106,6 +106,7 @@ export default {
       })
     },
     handleLogin() {
+      console.log('koko?')
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true

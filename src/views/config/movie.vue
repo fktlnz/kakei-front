@@ -13,6 +13,10 @@
           <el-option label="交通・通信" value="communication" />
           <el-option label="教育" value="education" />
           <el-option label="教養娯楽" value="entertainment" />
+          <el-option label="年収" value="income" />
+          <el-option label="社会保険" value="socialInsurancePremiums" />
+          <el-option label="源泉徴収" value="gensen" />
+          <el-option label="控除" value="deduction" />
         </el-select>
       </el-form-item>
       <el-form-item label="サブカテゴリ">
@@ -38,6 +42,10 @@
             <el-checkbox label="communication" name="type" />
             <el-checkbox label="education" name="type" />
             <el-checkbox label="entertainment" name="type" />
+            <el-checkbox label="income" name="type" />
+            <el-checkbox label="socialInsurancePremiums" name="type" />
+            <el-checkbox label="gensen" name="type" />
+            <el-checkbox label="deduction" name="type" />
           </el-checkbox-group>
           <el-button type="primary" @click="fetchData">更新</el-button>
         </el-form-item>
@@ -52,9 +60,9 @@
       >
         <el-table-column align="center" label="動画" width="300">
           <template slot-scope="scope">
-            <img v-if="!(isEdit && (beforeForm.id === scope.row.movie_id))" :src="scope.row.snippet.thumbnails.default.url" alt="サムネイル">
-            <p v-if="!(isEdit && (beforeForm.id === scope.row.movie_id))">{{ scope.row.snippet.title }}</p>
-            <el-input v-if="isEdit && (beforeForm.id === scope.row.movie_id)" v-model="form.id" :value="scope.row.movie_id" disabled="disabled" />
+            <img :src="scope.row.snippet.thumbnails.default.url" alt="サムネイル">
+            <p>{{ scope.row.snippet.title }}</p>
+            <!-- <el-input v-if="isEdit && (beforeForm.id === scope.row.movie_id)" v-model="form.id" :value="scope.row.movie_id" disabled="disabled" /> -->
           </template>
         </el-table-column>
         <el-table-column label="カテゴリ" width="100">
@@ -109,7 +117,7 @@ export default {
       beforeForm: {
         id: ''
       },
-      enableType: ['food', 'residence', 'utility', 'medical', 'communication', 'education', 'entertainment'],
+      enableType: ['food', 'residence', 'utility', 'medical', 'communication', 'education', 'entertainment', 'income', 'socialInsurancePremiums', 'gensen', 'deduction'],
       requestOptions: {
         id: '', // YouTube動画IDをカンマ区切りで複数指定
         part: 'id, snippet, player, statistics, status'
@@ -131,13 +139,13 @@ export default {
         .then((res) => {
           if (res.data.res === 'OK') {
             this.$message('got!')
-            this.listLoading = false
             this.listTemp = res.data.rst // 登録Youtube情報をすべて取得
             console.log(this.listTemp)
             this.requestOptions.id = res.data.ids.join(',') // 登録Youtubeの動画IDをカンマ区切りで取得
             console.log('ids')
             console.log(this.requestOptions)
             this.getYoutubeInfo()
+            this.listLoading = false
           } else {
             console.log(res)
             this.$message({
@@ -166,6 +174,7 @@ export default {
       const url = URL_API + '/movieinfo'
       return axios.post(url, params)
         .then((res) => {
+          console.log(res)
           if (res.data.res === 'OK') {
             this.$message('登録しました!')
             this.form.id = ''

@@ -1,14 +1,18 @@
 <template>
   <div>
     <div id="p-result-container">
+      <h1 class="c-title underline">オススメ動画</h1>
       <transition-group name="fadeup">
         <template>
           <div v-for="item in items" :key="item.id" :item="item" class="p-result-cards">
             <div class="result-card">
-              <div class="result-card-header"><span>{{ item.snippet.channelTitle }}</span></div>
+              <div class="result-card-header">
+                <p class="c-comment"><img src="@/assets/img/img_m.jpg" alt=""><span>{{ item.comment }}</span></p>
+                <span>{{ item.snippet.channelTitle }}</span>
+              </div>
               <div class="result-card-thumbnail"><a :href="'https://www.youtube.com/watch?v=' + item.id" target="_blank"><img :src="item.snippet.thumbnails.standard.url" alt="アイキャッチ"></a></div>
               <div class="result-card-body">
-                <div class="result-card-body__tags"><span>初級</span></div>
+                <div class="result-card-body__tags"><span v-for="tag in onCsvToArr(item.subcategory)" :key="tag.id" :tag="tag">{{ tag }}</span></div>
                 <div class="result-card-body__title"><a :href="'https://www.youtube.com/watch?v=' + item.id" target="_blank">{{ item.snippet.title }}</a></div>
                 <div class="result-card-body__additional"><img src="@/assets/img/icon_eye.png" alt=""><span>{{ item.statistics.viewCount }}回</span><img src="@/assets/img/icon_heart.png" alt=""><span>{{ item.statistics.likeCount }}回</span></div>
               </div>
@@ -22,20 +26,31 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import axios from 'axios'
 import $ from 'jquery'
+
+const URL_API = 'http://localhost:80/kakei/kakei-api/public/api'
 
 export default {
   name: 'Finance',
+  props: {
+    sort: {
+      type: String,
+      default: 'food'
+    }
+  },
   data() {
     return {
       items: {}, // 取得結果
+      itemsTemp: {},
       playlistId: '',
       nextPageToken: '',
       prevPageToken: '',
       requestOptions: {
         id: 'sM7958Hx4Yg,mi23LJoZHog,fU1Uq8W1Wl4,r21hg1AmXeY,v3fzEOZMIUs', // YouTube動画IDをカンマ区切りで複数指定可
         part: 'id, snippet, player, statistics, status'
-      }
+      },
+      enableType: []
     }
   },
   computed: {
@@ -46,7 +61,8 @@ export default {
   mounted() {
     // this.start()
     // window.gapi.client.setApiKey('AIzaSyBZxW1R5-q0dXKJIpZdEDUBydS4OEQemNg')
-    window.gapi.load('client', this.start)
+    this.fetchData()
+    // window.gapi.load('client', this.start)
   },
   methods: {
     start() {
@@ -72,6 +88,78 @@ export default {
         console.log(reason.result)
         // console.log('Error: ' + reason.result.error.message)
       })
+    },
+    fetchData() {
+      const url = URL_API + '/movieinfo?enableType=' + this.sort
+      console.log('sort')
+      console.log(this.sort)
+      return axios.get(url)
+        .then((res) => {
+          if (res.data.res === 'OK') {
+            this.$message('got!')
+            this.itemsTemp = res.data.rst // 登録Youtube情報をすべて取得
+            console.log(this.itemsTemp)
+            this.requestOptions.id = res.data.ids.join(',') // 登録Youtubeの動画IDをカンマ区切りで取得
+            console.log('ids')
+            console.log(this.requestOptions)
+            this.getYoutubeInfo()
+          } else {
+            console.log(res)
+            this.$message({
+              message: 'Fail!',
+              type: 'warning'
+            })
+          }
+        })
+        .catch((res) => {
+          this.$message({
+            message: 'cancel!',
+            type: 'warning'
+          })
+        })
+    },
+    getYoutubeInfo() {
+      // 2. Initialize the JavaScript client library.
+      const get = window.gapi.client.init({
+        'apiKey': 'AIzaSyBZxW1R5-q0dXKJIpZdEDUBydS4OEQemNg'
+        // clientId and scope are optional if auth is not required.
+        // 'clientId': 'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com',
+        // 'scope': 'profile'
+      }).then(() => {
+        // 3. Initialize and make the API request.
+        return window.gapi.client.request({
+          'mine': '',
+          'path': '/youtube/v3/videos',
+          'params': this.requestOptions
+        })
+      }).then((response) => {
+        console.log('response')
+        console.log(response.result)
+        this.items = response.result.items
+        this.joinArray(this.itemsTemp, this.items)
+      }, (reason) => {
+        console.log('reason!!')
+        console.log(reason.result)
+        // console.log('Error: ' + reason.result.error.message)
+      })
+
+      window.gapi.load('client', get)
+    },
+    joinArray(arr1, arr2) {
+      var loop = 0
+      var arrResult = []
+      arr1.forEach((val) => {
+        console.log(loop)
+        Object.assign(val, arr2[loop])
+        arrResult.push(val)
+        loop++
+      })
+      console.log('arrResult')
+      console.log(arrResult)
+      this.items = arrResult
+    },
+    onCsvToArr(csv) {
+      return csv.split(',')
     },
     hundleAPILoaded() {
       this.requestUserUploadsPlaylistId()
@@ -153,13 +241,16 @@ export default {
   .result-card {
 
     .result-card-header {
-      padding: 10px;
+      padding: 10px 10px 5px;
       > span {
         background-color: #ff7b5b;
+        display: inline-block;
         padding: 5px 15px;
         color: #fff;
         border-radius: 20px;
         font-size: 12px;
+        width: 100%;
+        text-align: center;
       }
     }
 
@@ -180,11 +271,15 @@ export default {
       &__tags {
         margin-bottom: 10px;
         > span {
+          display: inline-block;
           background-color: #003099;
           padding: 5px 15px;
           color: #fff;
           border-radius: 20px;
           font-size: 12px;
+          &:not(:last-child) {
+            margin-right: 5px;
+          }
         }
       }
       &__title {
