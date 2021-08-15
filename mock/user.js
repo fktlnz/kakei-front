@@ -24,6 +24,18 @@ const users = {
 }
 
 module.exports = [
+  // API URL
+ {
+    url: '/vue-admin-template/user/apiurl',
+    type: 'get',
+    response: _ => {
+      return {
+        code: 20000,
+        data: 'http://localhost:80/kakei/kakei-api/public/api'
+        // data: 'http://3.133.124.114/kakei-api/public/api'
+      }
+    }
+  },
   // user login
   {
     url: '/vue-admin-template/user/login',

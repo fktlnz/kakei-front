@@ -129,7 +129,6 @@ import { mapGetters } from 'vuex'
 import RaddarChart from './components/RaddarChart'
 import PieChart from './components/PieChart'
 
-const URL_API = 'http://localhost:80/kakei/kakei-api/public/api'
 
 export default {
   name: 'Finance',
@@ -182,7 +181,8 @@ export default {
       excessItems: '', // カンマ区切り
       items: {},
       itemsTemp: {},
-      enableType: []
+      enableType: [],
+      URL_API: ''
     }
   },
   computed: {
@@ -190,17 +190,25 @@ export default {
       'name'
     ])
   },
-  created() {
+  mounted() {
     if (this.rdata.average === undefined || this.rdata.you === undefined) {
       this.$router.push({ name: 'Finance' })
     }
     this.setResult()
     this.setExcessItems()
-    this.fetchData()
+    this.$store.dispatch('user/apiurl').then((r) => {
+      this.URL_API = r.data
+      this.fetchData()
+    }).catch((err) => {
+      this.$message({
+        message: 'get Error!',
+        type: 'warning'
+      })
+    })
   },
   methods: {
     fetchData() {
-      const url = URL_API + '/movieinfo?enableType=' + this.excessItems
+      const url = this.URL_API + '/movieinfo?enableType=' + this.excessItems
       return axios.get(url)
         .then((res) => {
           if (res.data.res === 'OK') {
@@ -320,7 +328,7 @@ export default {
       }
     },
     onEdit() {
-      return axios.get(URL_API + '/financeinfo?income=' + this.rdata.income)
+      return axios.get(this.URL_API + '/financeinfo?income=' + this.rdata.income)
         .then((res) => {
           if (res.data.res === 'OK') {
             this.rdata.average.food = res.data.rst.food

@@ -120,7 +120,6 @@
 import axios from 'axios'
 import { mapGetters } from 'vuex'
 
-const URL_API = 'http://localhost:80/kakei/kakei-api/public/api'
 
 export default {
   name: 'Finance',
@@ -146,7 +145,8 @@ export default {
       isEditLoading: false,
       isSubmitLoading: false,
       showMsg: false,
-      isEdit: false
+      isEdit: false,
+      URL_API: ''
     }
   },
   computed: {
@@ -154,12 +154,21 @@ export default {
       'name'
     ])
   },
-  created() {
-    this.fetchData()
+  mounted() {
+    this.$store.dispatch('user/apiurl').then((r) => {
+      this.URL_API = r.data
+      this.fetchData()
+    }).catch((err) => {
+      this.$message({
+        message: 'get Error!',
+        type: 'warning'
+      })
+    })
+    
   },
   methods: {
     fetchData() {
-      return axios.get(URL_API + '/financeinfo')
+      return axios.get(this.URL_API + '/financeinfo')
         .then((res) => {
           if (res.data.res === 'OK') {
             console.log(res)
@@ -206,7 +215,7 @@ export default {
       params.append('education', this.form.education)
       params.append('entertainment', this.form.entertainment)
 
-      const url = URL_API + '/financeinfo'
+      const url = this.URL_API + '/financeinfo'
       return axios.post(url, params)
         .then((res) => {
           console.log(res)
@@ -261,7 +270,7 @@ export default {
       params.append('education', this.form.education)
       params.append('entertainment', this.form.entertainment)
 
-      const url = URL_API + '/financeinfo'
+      const url = this.URL_API + '/financeinfo'
       return axios.post(url, params)
         .then((res) => {
           if (res.data.res === 'OK') {
@@ -296,7 +305,7 @@ export default {
         })
     },
     onDelete() {
-      const url = URL_API + '/deletefinanceinfo?id=' + this.form.id
+      const url = this.URL_API + '/deletefinanceinfo?id=' + this.form.id
       return axios.get(url)
         .then((res) => {
           if (res.data.res === 'OK') {
@@ -348,7 +357,7 @@ export default {
         return
       }
 
-      return axios.get(URL_API + '/financeinfo?income=' + this.form.income)
+      return axios.get(this.URL_API + '/financeinfo?income=' + this.form.income)
         .then((res) => {
           this.isEditLoading = false
           if (res.data.res === 'OK') {
@@ -411,7 +420,7 @@ export default {
       params.append('education', this.form.education)
       params.append('entertainment', this.form.entertainment)
 
-      const url = URL_API + '/financeinfo'
+      const url = this.URL_API + '/financeinfo'
       return axios.post(url, params)
         .then((res) => {
           console.log(res)

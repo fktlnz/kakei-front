@@ -10,13 +10,12 @@ export function login(data) {
   })
 }
 
-// export function login(data) {
-//  return request({
-//    url: '/vue-admin-template/user/login',
-//    method: 'post',
-//    data
-//  })
-// }
+export function apiurl() {
+  return request({
+    url: '/vue-admin-template/user/apiurl',
+    method: 'get'
+  })
+}
 
 export function getInfo(token) {
   return request({

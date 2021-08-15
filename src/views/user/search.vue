@@ -29,8 +29,6 @@ import { mapGetters } from 'vuex'
 import axios from 'axios'
 import $ from 'jquery'
 
-const URL_API = 'http://localhost:80/kakei/kakei-api/public/api'
-
 export default {
   name: 'Finance',
   props: {
@@ -50,7 +48,8 @@ export default {
         id: 'sM7958Hx4Yg,mi23LJoZHog,fU1Uq8W1Wl4,r21hg1AmXeY,v3fzEOZMIUs', // YouTube動画IDをカンマ区切りで複数指定可
         part: 'id, snippet, player, statistics, status'
       },
-      enableType: []
+      enableType: [],
+      URL_API: ''
     }
   },
   computed: {
@@ -61,7 +60,12 @@ export default {
   mounted() {
     // this.start()
     // window.gapi.client.setApiKey('AIzaSyBZxW1R5-q0dXKJIpZdEDUBydS4OEQemNg')
-    this.fetchData()
+    this.$store.dispatch('user/apiurl').then((r) => {
+      this.URL_API = r.data
+      this.fetchData()
+    }).catch((err) => {
+      this.URL_API = 'http://localhost:80/kakei/kakei-api/public/api'
+    })
     // window.gapi.load('client', this.start)
   },
   methods: {
@@ -90,7 +94,7 @@ export default {
       })
     },
     fetchData() {
-      const url = URL_API + '/movieinfo?enableType=' + this.sort
+      const url = this.URL_API + '/movieinfo?enableType=' + this.sort
       console.log('sort')
       console.log(this.sort)
       return axios.get(url)

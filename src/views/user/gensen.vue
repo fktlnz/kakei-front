@@ -566,8 +566,6 @@ import $ from 'jquery'
 import BarChartIncome from './components/gensen/income/BarChart'
 import PieChartIncome from './components/gensen/income/PieChart'
 
-const URL_API = 'http://localhost:80/kakei/kakei-api/public/api'
-
 export default {
   name: 'Finance',
   components: {
@@ -838,7 +836,8 @@ export default {
       isActiveRecommend: false, // オススメ動画の表示・非表示切り替え
       isActiveOtherRecommend: false, // 関連動画の表示・非表示切り替え
       drawer: false, // 詳細設定ドロワー
-      direction: 'rtl' // ドロワーが開く方向
+      direction: 'rtl', // ドロワーが開く方向
+      URL_API: ''
     }
   },
   computed: {
@@ -905,6 +904,11 @@ export default {
     }
   },
   mounted() {
+    this.$store.dispatch('user/apiurl').then((r) => {
+      this.URL_API = r.data
+    }).catch((err) => {
+      this.URL_API = 'http://localhost:80/kakei/kakei-api/public/api'
+    })
   },
   methods: {
     onSetGensenTable(update = false) {
@@ -1228,7 +1232,7 @@ export default {
       this.isActiveOtherRecommend = false
 
       this.dialogFormVisible = true
-      const url = URL_API + '/movieinfo?enableType=' + type
+      const url = this.URL_API + '/movieinfo?enableType=' + type
       return axios.get(url)
         .then((res) => {
           console.log('fetchdata')

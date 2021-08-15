@@ -60,8 +60,6 @@
 import axios from 'axios'
 import { mapGetters } from 'vuex'
 
-const URL_API = 'http://localhost:80/kakei/kakei-api/public/api'
-
 export default {
   name: 'Finance',
   data() {
@@ -75,7 +73,8 @@ export default {
         rePassword: '',
         email: ''
       },
-      message: ''
+      message: '',
+      URL_API: ''
     }
   },
   computed: {
@@ -83,12 +82,20 @@ export default {
       'name'
     ])
   },
-  created() {
-    this.fetchData()
+  mounted() {
+    this.$store.dispatch('user/apiurl').then((r) => {
+      this.URL_API = r.data
+      this.fetchData()
+    }).catch((err) => {
+      this.$message({
+        message: 'get Error!',
+        type: 'warning'
+      })
+    })
   },
   methods: {
     fetchData() {
-      return axios.get(URL_API + '/users')
+      return axios.get(this.URL_API + '/users')
         .then((res) => {
           if (res.data.res === 'OK') {
             console.log(res)
@@ -120,7 +127,7 @@ export default {
       params.append('re_pass', this.form.rePassword)
       params.append('email', this.form.email)
 
-      const url = URL_API + '/signup'
+      const url = this.URL_API + '/signup'
       return axios.post(url, params)
         .then((res) => {
           console.log(res)
@@ -159,7 +166,7 @@ export default {
       params.append('re_password', this.form.rePassword)
       params.append('email', this.form.email)
 
-      const url = URL_API + '/users'
+      const url = this.URL_API + '/users'
       return axios.post(url, params)
         .then((res) => {
           if (res.data.res === 'OK') {
@@ -186,7 +193,7 @@ export default {
         })
     },
     onDelete() {
-      const url = URL_API + '/deleteusers?id=' + this.form.id
+      const url = this.URL_API + '/deleteusers?id=' + this.form.id
       return axios.get(url)
         .then((res) => {
           if (res.data.res === 'OK') {

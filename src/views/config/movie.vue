@@ -100,8 +100,6 @@
 
 import axios from 'axios'
 
-const URL_API = 'http://localhost:80/kakei/kakei-api/public/api'
-
 export default {
   data() {
     return {
@@ -122,11 +120,20 @@ export default {
         id: '', // YouTube動画IDをカンマ区切りで複数指定
         part: 'id, snippet, player, statistics, status'
       },
-      isEdit: false
+      isEdit: false,
+      URL_API: ''
     }
   },
-  created() {
-    this.fetchData()
+  mounted() {
+    this.$store.dispatch('user/apiurl').then((r) => {
+      this.URL_API = r.data
+      this.fetchData()
+    }).catch((err) => {
+      this.$message({
+        message: 'get API URL Error!',
+        type: 'warning'
+      })
+    })
   },
   methods: {
     ontest(data) {
@@ -134,7 +141,7 @@ export default {
     },
     fetchData() {
       this.listLoading = true
-      const url = URL_API + '/movieinfo?enableType=' + this.enableType
+      const url = this.URL_API + '/movieinfo?enableType=' + this.enableType
       return axios.get(url)
         .then((res) => {
           if (res.data.res === 'OK') {
@@ -171,7 +178,7 @@ export default {
       params.append('subcategory', this.form.subcategory)
       params.append('comment', this.form.comment)
 
-      const url = URL_API + '/movieinfo'
+      const url = this.URL_API + '/movieinfo'
       return axios.post(url, params)
         .then((res) => {
           console.log(res)
@@ -207,7 +214,7 @@ export default {
       params.append('subcategory', this.form.subcategory)
       params.append('comment', this.form.comment)
 
-      const url = URL_API + '/movieinfo'
+      const url = this.URL_API + '/movieinfo'
       return axios.post(url, params)
         .then((res) => {
           if (res.data.res === 'OK') {
@@ -261,7 +268,7 @@ export default {
       window.gapi.load('client', get)
     },
     onDelete() {
-      const url = URL_API + '/deletemovieinfo?movieId=' + this.form.id
+      const url = this.URL_API + '/deletemovieinfo?movieId=' + this.form.id
       return axios.get(url)
         .then((res) => {
           if (res.data.res === 'OK') {

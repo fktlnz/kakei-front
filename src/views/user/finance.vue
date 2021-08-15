@@ -53,8 +53,6 @@
 import axios from 'axios'
 import { mapGetters } from 'vuex'
 
-const URL_API = 'http://localhost:80/kakei/kakei-api/public/api'
-
 export default {
   name: 'Finance',
   data() {
@@ -93,7 +91,8 @@ export default {
         }
       },
       message: '',
-      IsCommunicationShow: true
+      IsCommunicationShow: true,
+      URL_API: ''
     }
   },
   computed: {
@@ -131,6 +130,16 @@ export default {
       this.fields.entertainment = String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     }
   },
+  mounted() {
+    this.$store.dispatch('user/apiurl').then((r) => {
+      this.URL_API = r.data
+    }).catch((err) => {
+      this.$message({
+        message: 'get API URL Error!',
+        type: 'warning'
+      })
+    })
+  },
   methods: {
     async onSetAverage() {
       const rst = this.checkForm()
@@ -154,7 +163,7 @@ export default {
     },
     async getAverage(income, household, isSetYou = false) {
       console.log('koko')
-      await axios.get(URL_API + '/financeinfo?income=' + income + '&household=' + household)
+      await axios.get(this.URL_API + '/financeinfo?income=' + income + '&household=' + household)
         .then((res) => {
           if (res.data.res === 'OK') {
             console.log(res)
